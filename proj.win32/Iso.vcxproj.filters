@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PatternGenerator">
+      <UniqueIdentifier>{f4becc99-5230-4c2f-82e8-423f818e5f99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PatternGenerator\Pattern">
+      <UniqueIdentifier>{33c76278-c742-4d53-923f-0a4797a8f360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{1fbd2beb-575b-4ae9-b8b8-a4bf88338028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Prototyping">
+      <UniqueIdentifier>{f88cf45d-131f-4268-b2f9-ddfc976035d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scenes">
+      <UniqueIdentifier>{31eef89d-6602-4b0c-8ab5-39e7b5cd9c38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\ScreenInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PatternGenerator.cpp">
+      <Filter>src\PatternGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Pattern.cpp">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PatternVertex.cpp">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PatternEdge.cpp">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Polygon.cpp">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\PolygonOperations.cpp">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\CommonUtilities.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\DL_Debug.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\fi_file.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\StackWalker.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GraphicsScene.cpp">
+      <Filter>src\Prototyping</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src\Prototyping</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\InputScene.cpp">
+      <Filter>src\Prototyping</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ScreenInfo.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PaternGenerator.h">
+      <Filter>src\PatternGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Pattern.h">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PatternVertex.h">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PatternEdge.h">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Polygon.h">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\PolygonOperations.h">
+      <Filter>src\PatternGenerator\Pattern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GrowingArray.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\CommonUtilities.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DL_Assert.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DL_Debug.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\fi_file.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\stackwalker.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\StaticArray.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\FixedArray.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GraphicsScene.h">
+      <Filter>src\Prototyping</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src\Prototyping</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\InputScene.h">
+      <Filter>src\Prototyping</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
