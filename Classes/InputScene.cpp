@@ -72,14 +72,11 @@ bool InputScene::init()
 
 
 
-#if CC_USE_PHYSICS
-	//_debugDraw = !_debugDraw;	
-	//myPhysicsLayer->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-#endif
 
-	auto ground = Node::create();
-	ground->setPhysicsBody(PhysicsBody::createEdgeSegment(ScreenInfo::leftBottom() + Vec2(0, 50), ScreenInfo::rightBottom() + Vec2(0, 50)));
-	myPhysicsLayer->addChild(ground);
+
+	//auto ground = Node::create();
+	//ground->setPhysicsBody(PhysicsBody::createEdgeSegment(ScreenInfo::leftBottom() + Vec2(0, 50), ScreenInfo::rightBottom() + Vec2(0, 50)));
+	//addChild(ground);
 
 	
 	//
@@ -90,7 +87,7 @@ bool InputScene::init()
 	box->setPosition(ScreenInfo::center());		
 //	box->getPhysicsBody()->
 	//box->getPhysicsBody()->setTag(_sliceTag);
-	myPhysicsLayer->addChild(box);
+	//addChild(box);
 
 
 	//Make pattern
@@ -183,31 +180,7 @@ bool InputScene::init()
 	
 }
 
-void InputScene::DrawPolygon(const GeoPolygon& aPoly, const Color4F& aLineColor, const Color4F& aVertexColor, const Color4F& aInOutCol , const Color4F& aOutInCol)
-{
-	GrowingArray<GeoEdge> polyEdges(4);
-	aPoly.GetEdges(polyEdges);
 
-	
-	GrowingArray<GeoVertex> verts;
-	aPoly.GetVertices(verts);
-
-	//	myDebugDrawNode->drawSolidPoly(verts.GetArray(), verts.Count(), aLineColor);
-	for (int i = 0; i < polyEdges.Count(); ++i)
-	{
-		myDebugDrawNode->drawLine(polyEdges[i].myStart, polyEdges[i].myEnd, aLineColor);
-		Vec2 line = (polyEdges[i].myEnd - polyEdges[i].myStart);
-		Vec2 center = polyEdges[i].myStart + line / 2;
-		Vec2 centrtOffSet = line.getNormalized();
-		centrtOffSet.rotate(Vec2::ZERO, -(float)M_PI_2);
-		centrtOffSet *= 15.f;
-		myDebugDrawNode->drawPoint(center, 2, aLineColor);
-		myDebugDrawNode->drawLine(center, center + centrtOffSet, aLineColor);
-			
-	
-	}
-	
-}
 
 void InputScene::draw(Renderer *renderer, const Mat4& transform, uint32_t flags)
 {
@@ -249,14 +222,11 @@ void InputScene::draw(Renderer *renderer, const Mat4& transform, uint32_t flags)
 
 	for (int i = 0; i < myPolygons.Count(); ++i)
 	{
-		DrawPolygon(*myPolygons[i], myPolyColors[i], Color4F::WHITE, Color4F::WHITE, Color4F::WHITE);
+		//DrawPolygon(*myPolygons[i], myPolyColors[i], Color4F::WHITE, Color4F::WHITE, Color4F::WHITE);
 	}
 
-	
-
-	DrawPolygon(*myPolygon, Color4F::WHITE, Color4F::WHITE, Color4F::GRAY, Color4F::GRAY);
-	
-	DrawPolygon(*myMousePolygon, Color4F::GREEN, Color4F::GREEN, Color4F::RED, Color4F::WHITE);
+	//DrawPolygon(*myPolygon, Color4F::WHITE, Color4F::WHITE, Color4F::GRAY, Color4F::GRAY);	
+	//DrawPolygon(*myMousePolygon, Color4F::GREEN, Color4F::GREEN, Color4F::RED, Color4F::WHITE);
 	
 	//DrawPolygon(*myAandB, Color4F::ORANGE, Color4F::ORANGE, Color4F::GREEN, Color4F::RED);
 	//DrawPolygon(*myAnotB, Color4F::GREEN, Color4F::GREEN, Color4F::GREEN, Color4F::RED);

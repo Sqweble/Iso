@@ -43,7 +43,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     if(!glview) 
 	{
         glview = GLViewImpl::create("Iso Game");
-		glview->setFrameSize(1280, 960);
+		glview->setFrameSize(800, 600);
         director->setOpenGLView(glview);
     }
 
@@ -61,7 +61,7 @@ bool AppDelegate::applicationDidFinishLaunching()
 	Scene* gameScene = GameScene::createScene();
 
 	//scene->addChild(graphicsScene);
-	gameScene->addChild(InputScene::createScene());
+	//gameScene->addChild(InputScene::createScene());
 
     // run
 	director->runWithScene(gameScene);

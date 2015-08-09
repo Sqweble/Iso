@@ -244,7 +244,7 @@ void PrepareForWeilerAthertonClipping(GrowingArray<GeoVertexClipNode*>* inOutSub
 
 bool GeoPolygonOperations::WeilerAthertonClipping(GeoPolygon& aSubjectPolygon, GeoPolygon& aClipPolygon, GrowingArray<GrowingArray<GeoVertex>>& outNewPolys, EClippingMode::Type aClippingMode)
 {	
-	//Create node lists
+	//Create node lists - look at how WeilerAthertonClipping works, Google is your friend
 
 	GrowingArray<GeoVertex> subjectVerts;
 	aSubjectPolygon.GetVertices(subjectVerts);
@@ -304,12 +304,7 @@ bool GeoPolygonOperations::WeilerAthertonClipping(GeoPolygon& aSubjectPolygon, G
 			lol.Add(newSubjectNodes[i]->myVertex);
 		}
 		return true;
-	}
-
-	
-	
-
-	
+	}	
 	
 
 
