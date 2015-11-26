@@ -126,17 +126,17 @@ bool InputScene::init()
 	verts.Add(Vec2(size, -size));
 	verts.Add(Vec2(-size, -size));
 
-	myMousePolygon = new GeoPolygon();
-	myMousePolygon->Init(verts);
+	myMousePolygon = GeoPolygon::create();
+	myMousePolygon->SetWorldVertices(verts);
 
 	for (int i = 0; i < verts.Count(); ++i)
 	{
 		verts[i] *= 5;
 	}
 
-	myPolygon = new GeoPolygon();
-	myPolygon->Init(verts);
-	myPolygon->SetPosition(ScreenInfo::center());
+	myPolygon = GeoPolygon::create();
+	myPolygon->SetLocalVertices(verts, ScreenInfo::center());
+	
 
 	myPolygons.Init(4);
 	myPolygons.Add(myPolygon);
@@ -276,8 +276,8 @@ void InputScene::OnMouseDown(cocos2d::Event* aEvent)
 			if (clipping && myNewPolygons.Count() > 0)
 			{
 				//Replace with first poly
-				myPolygons[i]->Init(myNewPolygons[0]);
-				myPolygons[i]->SetPositionToCenterOfVerices();
+				myPolygons[i]->SetWorldVertices(myNewPolygons[0]);
+				
 
 				//If more polys, add them
 				if (myNewPolygons.Count() > 1)
@@ -285,7 +285,7 @@ void InputScene::OnMouseDown(cocos2d::Event* aEvent)
 					for (int i = 1; i < myNewPolygons.Count(); ++i)
 					{
 						myPolygons.Add(new GeoPolygon());
-						myPolygons.GetLast()->Init(myNewPolygons[i]);
+						myPolygons.GetLast()->SetWorldVertices(myNewPolygons[i]);
 
 						Color4F color;
 						color.r = rand_0_1();
@@ -303,7 +303,7 @@ void InputScene::OnMouseDown(cocos2d::Event* aEvent)
 
 		}
 
-		myMousePolygon->SetPosition(location);
+		myMousePolygon->setPosition(location);
 		switch (button)
 		{
 		case 0:
@@ -325,9 +325,9 @@ void InputScene::onTouchEnded(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 	//myLabelTouchInfo->setPosition(aTouch->getLocation());
 	//myLabelTouchInfo->setString("onTouchEnded");
 
-	myMousePolygon->SetPosition(aTouch->getLocation());
-	myAandB->SetPosition(Vec2(0, 0));//aTouch->getLocation();
-	myAnotB->SetPosition(Vec2(0, 0));
+	myMousePolygon->setPosition(aTouch->getLocation());
+	myAandB->setPosition(Vec2(0, 0));//aTouch->getLocation();
+	myAnotB->setPosition(Vec2(0, 0));
 	
 
 	//GeoPolygonOperations::AandB(*myPolygon, *myMousePolygon, *myAandB);
@@ -344,8 +344,8 @@ void InputScene::onTouchEnded(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 		if (clipping && myNewPolygons.Count() > 0)
 		{
 			//Replace with first poly
-			myPolygons[i]->Init(myNewPolygons[0]);
-			myPolygons[i]->SetPositionToCenterOfVerices();
+			myPolygons[i]->SetWorldVertices(myNewPolygons[0]);
+			
 
 			//If more polys, add them
 			if (myNewPolygons.Count() > 1)
@@ -353,7 +353,7 @@ void InputScene::onTouchEnded(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 				for (int i = 1; i < myNewPolygons.Count(); ++i)
 				{
 					myPolygons.Add(new GeoPolygon());
-					myPolygons.GetLast()->Init(myNewPolygons[i]);
+					myPolygons.GetLast()->SetWorldVertices(myNewPolygons[i]);
 
 					Color4F color;
 					color.r = rand_0_1();
@@ -394,7 +394,7 @@ void InputScene::onTouchEnded(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 			
 			
 			labels.Add(Label::createWithSystemFont(vertIndex, "Arial", 12));
-			labels.GetLast()->setPosition(myPolygons[i]->GetVertices()[j] + myPolygons[i]->GetPosition() + Vec2(8,8));
+			//labels.GetLast()->setPosition(myPolygons[i]->GetVertices()[j] + myPolygons[i]->GetPosition() + Vec2(8,8));
 			addChild(labels.GetLast());
 		}
 	}
@@ -406,7 +406,7 @@ void InputScene::onTouchEnded(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 		
 
 		labels.Add(Label::createWithSystemFont(std::to_string(i), "Arial", 12));
-		labels.GetLast()->setPosition(myMousePolygon->GetVertices()[i] + myMousePolygon->GetPosition() + Vec2(8, 8));
+//		labels.GetLast()->setPosition(myMousePolygon->GetVertices()[i] + myMousePolygon->GetPosition() + Vec2(8, 8));
 		addChild(labels.GetLast());
 	}
 
@@ -433,7 +433,7 @@ void InputScene::onTouchMoved(cocos2d::Touch* aTouch, cocos2d::Event* aEvent)
 	//myLabelTouchInfo->setString("onTouchMoved");
 	mySecondRayPoint = aTouch->getLocation();
 
-	myMousePolygon->SetPosition(aTouch->getLocation());
+//	myMousePolygon->SetPosition(aTouch->getLocation());
 
 	UpdateRayInfo();
 }

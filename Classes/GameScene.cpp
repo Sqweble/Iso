@@ -3,9 +3,13 @@
 #include "physics/CCPhysicsWorld.h"
 #include "2d/CCScene.h"
 
+
 #include "ScreenInfo.h"
+#include "GameRoot.h"
 
 #include "Player.h"
+#include "DestructibleObject.h"
+
 USING_NS_CC;
 
 
@@ -24,10 +28,15 @@ Scene* GameScene::createScene()
 
 bool GameScene::init()
 {
-	if (Layer::init() == false)
-	{
+	if (Layer::init() == false)	
 		return false;
-	}
+	
+	GameRoot::GetInstance()->myGameScene = this;
+
+	myDestructibleObjects.Init(8);
+
+	myDebugDrawNode = DrawNode::create();
+	addChild(myDebugDrawNode);
 
 	Label* label = Label::createWithSystemFont("Gamescene Works", "Arial", 96);
 
@@ -35,8 +44,29 @@ bool GameScene::init()
 	addChild(label);
 
 	Player* player = Player::create();
-
 	addChild(player);
+
+	//Destructible object
+	{
+		GrowingArray<GeoVertex> verts(4);
+
+		Vec2 center = getPosition();
+		Vec2 size = Vec2(75, 400);
+
+		verts.Add(center - size / 2);
+		verts.Add(center + Vec2(-size.x / 2, size.y / 2));
+		verts.Add(center + Vec2(size.x / 2, size.y / 2));
+		verts.Add(center + Vec2(size.x / 2, -size.y / 2));
+
+		DestructibleObject* destObject = DestructibleObject::create();
+		
+		destObject->Init(verts);
+		destObject->setPosition(Vec2(0, 510));
+		destObject->setRotation(0.f);
+		
+	}
+	
+	//addChild(destObject);
 
 
 	auto ground = Node::create();
@@ -62,7 +92,23 @@ bool GameScene::init()
 	return true;
 	//Create game layerrs
 }
+void GameScene::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
+{
+	myDebugDrawNode->clear();
+	
 
+
+	myDebugDrawNode->drawCircle(getPosition(),40,getRotation(),8,true,Color4F::WHITE);
+	myDebugDrawNode->drawCircle(convertToWorldSpace(getPosition()), 45, getRotation(), 8, true, Color4F::MAGENTA);
+
+	for (int i = 0; i < myDestructibleObjects.Count(); i++)
+	{
+		myDebugDrawNode->drawPoint(myDestructibleObjects[i]->getPosition(), 8, Color4F::WHITE);
+		
+	}
+
+
+}
 void GameScene::menuCloseCallback(Ref* pSender)
 {
 	Director::getInstance()->end();

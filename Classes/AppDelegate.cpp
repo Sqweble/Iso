@@ -66,6 +66,10 @@ bool AppDelegate::applicationDidFinishLaunching()
     // run
 	director->runWithScene(gameScene);
 
+	auto keyboardEventListener = EventListenerKeyboard::create();
+	keyboardEventListener->onKeyPressed = CC_CALLBACK_2(AppDelegate::OnKeyPressed, this);
+
+	director->getEventDispatcher()->addEventListenerWithFixedPriority(keyboardEventListener, 1);
     return true;
 }
 
@@ -85,4 +89,16 @@ void AppDelegate::applicationWillEnterForeground()
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+}
+void AppDelegate::OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent)
+{
+	if (aKeyCode == EventKeyboard::KeyCode::KEY_F5)
+	{
+		//Director::getInstance()->restart();
+		Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
+		
+		Scene* gameScene = GameScene::createScene();
+
+		Director::getInstance()->replaceScene(gameScene);
+	}
 }

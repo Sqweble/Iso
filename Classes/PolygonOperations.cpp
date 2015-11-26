@@ -36,18 +36,19 @@ bool GeoPolygonOperations::Inside(const Vec2& aPoint, const GrowingArray<GeoEdge
 bool GeoPolygonOperations::Inside(const Vec2& aPoint, const GeoPolygon& aPolygon)
 {
 	GrowingArray<GeoEdge> edges;
-	aPolygon.GetEdges(edges);
+	aPolygon.GetEdgesLocal(edges);
 	
-	return Inside(aPoint, edges);
+	//Vec2 localPos = aPoint - aPolygon.getPosition();
+	return Inside(aPolygon.convertToNodeSpace(aPoint), edges);
 }
 
 void GeoPolygonOperations::AandB(const GeoPolygon& aPolyA, const GeoPolygon& aPolyB, GeoPolygon& aOutPoly)
 {	
 	GrowingArray<GeoEdge> polyAEdges;
-	aPolyA.GetEdges(polyAEdges);
+	aPolyA.GetEdgesWorld(polyAEdges);
 
 	GrowingArray<GeoEdge> polyBEdges;
-	aPolyB.GetEdges(polyBEdges);
+	aPolyB.GetEdgesWorld(polyBEdges);
 
 	//
 	//
@@ -246,17 +247,17 @@ bool GeoPolygonOperations::WeilerAthertonClipping(GeoPolygon& aSubjectPolygon, G
 {	
 	//Create node lists - look at how WeilerAthertonClipping works, Google is your friend
 
-	GrowingArray<GeoVertex> subjectVerts;
-	aSubjectPolygon.GetVertices(subjectVerts);
+	GrowingArray<GeoVertex> subjectVerts(aSubjectPolygon.GetVerticesNum());
+	aSubjectPolygon.GetVerticesWorld(subjectVerts);
 
-	GrowingArray<GeoVertex> clipVerts;
-	aClipPolygon.GetVertices(clipVerts);
+	GrowingArray<GeoVertex> clipVerts(aClipPolygon.GetVerticesNum());
+	aClipPolygon.GetVerticesWorld(clipVerts);
 
 	int sCount = subjectVerts.Count();
 	int cCount = clipVerts.Count();
 
-	Vec2 sPos = aSubjectPolygon.GetPosition();
-	Vec2 cPos = aClipPolygon.GetPosition();
+	//Vec2 sPos = aSubjectPolygon.getPosition();
+	//Vec2 cPos = aClipPolygon.getPosition();
 
 	FixedArray<GeoVertexClipNode> subjectNodes(sCount * 2);
 	GrowingArray<GeoVertexClipNode*> newSubjectNodes(32);

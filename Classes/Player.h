@@ -37,7 +37,8 @@ namespace EInputMapping
 class Player : public GameObject
 {
 public:
-	
+	Player();
+	~Player();
 
 	bool init();
 	static Player* create();
@@ -46,7 +47,7 @@ public:
 	void update(float aDeltaTime);
 	void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 
-	void DrawPolygon(const GeoPolygon& aPoly, const Color4F& aColor);
+	
 
 	//Input
 	void OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent);
@@ -73,7 +74,7 @@ public:
 
 	//cocos2d::Sprite
 private:
-	DrawNode* myDebugDrawNode;
+	
 
 	
 	Texture2D* mySpriteSheet;
@@ -116,6 +117,9 @@ private:
 	GeoPolygon* myDashCutPolygon;
 	GrowingArray<GeoPolygon*> myPolygons;
 	GrowingArray<GrowingArray<GeoVertex>> myNewPolygons;
+
+
+	
 
 	
 

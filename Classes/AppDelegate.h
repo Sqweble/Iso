@@ -1,7 +1,12 @@
 #ifndef  _APP_DELEGATE_H_
 #define  _APP_DELEGATE_H_
 
+
+
+
 #include "cocos2d.h"
+
+USING_NS_CC;
 
 /**
 @brief    The cocos2d Application.
@@ -34,6 +39,8 @@ public:
     @param  the pointer of the application
     */
     virtual void applicationWillEnterForeground();
+
+	void OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent);
 };
 
 #endif // _APP_DELEGATE_H_

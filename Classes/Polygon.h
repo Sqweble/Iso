@@ -56,29 +56,28 @@ struct GeoEdge
 	GeoVertex myEnd;
 };
 
-class GeoPolygon
+class GeoPolygon : public cocos2d::Layer
 {
 public:
-	void Init(const GrowingArray<GeoVertex>& someVertices);
+
+	static GeoPolygon* create();
+
+	void SetWorldVertices(const GrowingArray<GeoVertex>& someVertices);
+	void SetLocalVertices(const GrowingArray<GeoVertex>& someVertices, const Vec2& aPosition);
 	void Clear();
-
-	void SetPositionToCenterOfVerices();
-	void MakeVerticesLocalToPosition(const Vec2& aPosition);
 	
-	void GetEdges(GrowingArray<GeoEdge>& someOutEdges) const;
+	static Vec2 GetCenterOfWorldVertices(const GrowingArray<GeoVertex>& someVertices);
+	
+	void GetEdgesWorld(GrowingArray<GeoEdge>& someOutEdges) const;
 	void GetEdgesLocal(GrowingArray<GeoEdge>& someOutEdges) const;
-
-	void SetPosition(const Vec2& aPosition);
-	Vec2 GetPosition();
 	
-	GrowingArray<GeoVertex>& GetVertices();
-	void GetVertices(GrowingArray<GeoVertex>& someOutVertices) const;
+	void GetVerticesWorld(GrowingArray<GeoVertex>& someOutVertices) const;
 	void GetVerticesLocal(GrowingArray<GeoVertex>& someOutVertices) const;
 
 	const int GetVerticesNum() const;
 
 private:
-	
+	void SetPositionToCenterOfVerices();
 
 	
 	
@@ -86,7 +85,7 @@ private:
 private:
 	//Should always be in order
 	GrowingArray<GeoVertex> myVertices;
-	Vec2 myPosition;
+	//Vec2 myPosition;
 
 };
 

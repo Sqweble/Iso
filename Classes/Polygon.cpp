@@ -1,5 +1,5 @@
 #include "Polygon.h"
-
+#include "GameRoot.h"
 
 
 
@@ -96,89 +96,67 @@ chainHull_2D(const GrowingArray<GeoVertex>& P, int n, GrowingArray<GeoVertex>& H
 	return top + 1;
 }
 
-
-
-
-void GeoPolygon::Init(const GrowingArray<GeoVertex>& someVertices)
+GeoPolygon* GeoPolygon::create()
 {
-	myVertices = someVertices;	
+	GeoPolygon* ret = new (std::nothrow) GeoPolygon();
+	if (ret && ret->init())
+	{
+		ret->autorelease();		
+	}
+	else
+	{
+		CC_SAFE_DELETE(ret);
+	}
+	return ret;
 }
 
+
+void GeoPolygon::SetWorldVertices(const GrowingArray<GeoVertex>& someVertices)
+{
+	myVertices = someVertices;	
+	//SetPositionToCenterOfVerices();
+	Vec2 center = GetCenterOfWorldVertices(myVertices);
+	//Make vertices local	
+	for (int i = 0; i < myVertices.Count(); i++)
+	{	
+		myVertices[i] = convertToNodeSpace(myVertices[i]);
+	}
+}
+void GeoPolygon::SetLocalVertices(const GrowingArray<GeoVertex>& someVertices, const Vec2& aPosition)
+{
+	myVertices = someVertices;
+	setPosition(aPosition);
+}
 void GeoPolygon::Clear()
 {
 	myVertices.RemoveAll();
-	myPosition = Vec2::ZERO;
+	setPosition(Vec2::ZERO);
 }
 
-void GeoPolygon::SetPositionToCenterOfVerices()
+Vec2 GeoPolygon::GetCenterOfWorldVertices(const GrowingArray<GeoVertex>& someVertices)
 {
-	int vCount = myVertices.Count();
-
-	Vec2 center = Vec2(0, 0);
-
-	for (int i = 0; i < vCount; ++i)
+	Vec2 center = Vec2::ZERO;
+	for (int i = 0; i < someVertices.Count(); ++i)
 	{
-		center += myVertices[i];
+		center += someVertices[i];
 	}
+	return center/someVertices.Count();
+}
 
-	center.x /= (float)vCount;
-	center.y /= (float)vCount;
-
-	myPosition = center;
-
-	Vec2 toPos = myPosition - center;
-
-	for (int i = 0; i < vCount; ++i)
-	{
-		myVertices[i] -= myPosition;
-	}
+void GeoPolygon::GetEdgesWorld(GrowingArray<GeoEdge>& someOutEdges) const
+{
+	GetEdgesLocal(someOutEdges);
 	
-}
-void GeoPolygon::MakeVerticesLocalToPosition(const Vec2& aPosition)
-{
-	myPosition = aPosition;
-
-	int vCount = myVertices.Count();
-
-	Vec2 center = Vec2(0, 0);
-
-	for (int i = 0; i < vCount; ++i)
+	for (int i = 0; i < someOutEdges.Count(); i++)
 	{
-		center += myVertices[i];
+		Mat4 nodeToWorld = getNodeToWorldTransform().getInversed();
+				
+		someOutEdges[i].myStart = convertToWorldSpace(someOutEdges[i].myStart);
+		someOutEdges[i].myEnd = convertToWorldSpace(someOutEdges[i].myEnd);
 	}
-
-//	center /= vCount;
-
-	Vec2 toPos = myPosition - center;
-
-	for (int i = 0; i < vCount; ++i)
-	{
-		myVertices[i] += center;
-	}
-
-}
-
-void GeoPolygon::GetEdges(GrowingArray<GeoEdge>& someOutEdges) const
-{
-	if (myVertices.Count() <= 0)
-	{
-		return;
-	}
-
-	someOutEdges.RemoveAll();
-	someOutEdges.Init(myVertices.Count());
-
-	for (int i = 0; i < myVertices.Count() - 1; ++i)
-	{
-		someOutEdges.Add(GeoEdge(myPosition + myVertices[i], myPosition + myVertices[i + 1]));
-	}
-
-	//last
-	int lastIndex = myVertices.Count() - 1;
-	someOutEdges.Add(GeoEdge(myPosition + myVertices[lastIndex], myPosition + myVertices[0]));
 }
 void GeoPolygon::GetEdgesLocal(GrowingArray<GeoEdge>& someOutEdges) const
-{
+{	
 	if (myVertices.Count() <= 0)
 	{
 		return;
@@ -195,34 +173,37 @@ void GeoPolygon::GetEdgesLocal(GrowingArray<GeoEdge>& someOutEdges) const
 	someOutEdges.Add(GeoEdge(myVertices[lastIndex], myVertices[0]));
 }
 
-void GeoPolygon::SetPosition(const Vec2& aPosition)
-{
-	myPosition = aPosition;
-}
-Vec2 GeoPolygon::GetPosition()
-{
-	return myPosition;
-}
-
-GrowingArray<GeoVertex>& GeoPolygon::GetVertices()
-{
-	return myVertices;
-}
-void GeoPolygon::GetVertices(GrowingArray<GeoVertex>& someOutVertices) const
+void GeoPolygon::GetVerticesWorld(GrowingArray<GeoVertex>& someOutVertices) const
 {
 	GetVerticesLocal(someOutVertices);
-	int numVerts = someOutVertices.Count();
-	for (int i = 0; i < numVerts; ++i)
+
+	for (int i = 0; i < someOutVertices.Count(); i++)
 	{
-		someOutVertices[i] += myPosition;
-	}
+		someOutVertices[i] = convertToWorldSpace(someOutVertices[i]);
+	}	
 }
 void GeoPolygon::GetVerticesLocal(GrowingArray<GeoVertex>& someOutVertices) const
 {
-	someOutVertices = myVertices;
+	someOutVertices = myVertices;	
 }
 const int GeoPolygon::GetVerticesNum() const
 {
 	return myVertices.Count();
+}
+void GeoPolygon::SetPositionToCenterOfVerices()
+{
+	int vCount = myVertices.Count();
+
+	Vec2 center = Vec2(0, 0);
+
+	for (int i = 0; i < vCount; ++i)
+	{
+		center += myVertices[i];
+	}
+
+	center.x /= (float)vCount;
+	center.y /= (float)vCount;
+
+	setPosition(center);
 }
 

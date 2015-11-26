@@ -1,19 +1,25 @@
 #include "Player.h"
 
+#include "DestructibleObject.h"
 
 #include "IsoMath.h"
 #include "ScreenInfo.h"
 
-
+Player::Player()
+{
+}
+Player::~Player()
+{
+	
+}
 bool Player::init()
 {
-	if (!Node::init())
+	if (!GameObject::init())
 	{
 		return false;
 	}
 
-	myDebugDrawNode = DrawNode::create();
-	addChild(myDebugDrawNode);
+	
 
 	
 	myMovement = 0.f;
@@ -89,22 +95,26 @@ bool Player::init()
 
 	//Polygon
 	GrowingArray<GeoVertex> verts(4);
-
-	Vec2 leftBottom = Vec2(200, 100);
+	
+	Vec2 center = Vec2(74, 400);
 	Vec2 size = Vec2(75, 400);
 
-	verts.Add(leftBottom);
-	verts.Add(leftBottom + Vec2(0, size.y));
-	verts.Add(leftBottom + Vec2(size.x, size.y));
-	verts.Add(leftBottom + Vec2(size.x, 0));
+	verts.Add(center - size / 2);
+	verts.Add(center + Vec2(-size.x / 2, size.y / 2));
+	verts.Add(center + Vec2(size.x / 2, size.y / 2));
+	verts.Add(center + Vec2(size.x / 2, -size.y / 2));
 
-	GeoPolygon* polygon = new GeoPolygon();
-	polygon->Init(verts);
+	GeoPolygon* polygon = GeoPolygon::create();
+	polygon->SetWorldVertices(verts);	
+	GameRoot::GetGameScene()->addChild(polygon);
+	polygon->setPosition(Vec2(0, 200));
+	polygon->setRotation(0.f);
 
-	myDashCutPolygon = new GeoPolygon();
+	myDashCutPolygon = GeoPolygon::create();
+	GameRoot::GetGameScene()->addChild(myDashCutPolygon);
 	
 	myPolygons.Init(4);
-	myPolygons.Add(polygon);
+	//myPolygons.Add(polygon);
 
 
 	//
@@ -130,7 +140,7 @@ bool Player::init()
 	
 
 
-	setPosition(ScreenInfo::center());
+	setPosition(center);
 
 	return true;
 }
@@ -151,7 +161,11 @@ Player* Player::create()
 
 void Player::update(float aDeltaTime)
 {
-	
+	if (abs(getPosition().x - myPreviousFramePosition.x) > 4.f)
+	{
+		bool breakka = true;
+		breakka = false;
+	}
 	//UpdateMovementInput
 	{
 		myMovementInput = Vec2::ZERO;
@@ -184,6 +198,7 @@ void Player::update(float aDeltaTime)
 
 	Camera* defaultCamera = Director::getInstance()->getRunningScene()->getDefaultCamera();
 	defaultCamera->setPosition(defaultCamera->getPosition().lerp(pos, aDeltaTime * 15.f));
+	
 
 
 	myPreviousFramePosition = getPosition();
@@ -197,7 +212,7 @@ void Player::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	//myDebugDrawNode->drawCircle(getPosition(),32, getRotation(), 8, true, Color4F::GREEN);
 	myDebugDrawNode->drawCircle(myDebugDrawNode->convertToNodeSpace(getPosition()), myHalfHeight, getRotation(), 8, true, Color4F::WHITE);
 
-
+	myDebugDrawNode->drawCircle(myDebugDrawNode->convertToNodeSpace(Vec2(0, 0)),16,45.f,8,true,Color4F::GRAY);
 	
 	myDebugDrawNode->drawCircle(myDebugDrawNode->convertToNodeSpace(ScreenInfo::left()), 32, getRotation(), 8, true, Color4F::BLUE);
 	myDebugDrawNode->drawCircle(myDebugDrawNode->convertToNodeSpace(ScreenInfo::right()), 32, getRotation(), 8, true, Color4F::RED);
@@ -234,34 +249,9 @@ void Player::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
 	{
 		DrawPolygon(*myPolygons[i],Color4F::WHITE);
 	}
-
+	
 }
-void Player::DrawPolygon(const GeoPolygon& aPoly, const Color4F& aColor)
-{
-	GrowingArray<GeoEdge> polyEdges(4);
-	aPoly.GetEdges(polyEdges);
 
-
-	GrowingArray<GeoVertex> verts;
-	aPoly.GetVertices(verts);
-
-	//	myDebugDrawNode->drawSolidPoly(verts.GetArray(), verts.Count(), aLineColor);
-	for (int i = 0; i < polyEdges.Count(); ++i)
-	{
-		
-		myDebugDrawNode->drawLine(myDebugDrawNode->convertToNodeSpace(polyEdges[i].myStart), myDebugDrawNode->convertToNodeSpace(polyEdges[i].myEnd), aColor);
-		Vec2 line = (polyEdges[i].myEnd - polyEdges[i].myStart);
-		Vec2 center = polyEdges[i].myStart + line / 2;
-		Vec2 centrtOffSet = line.getNormalized();
-		centrtOffSet.rotate(Vec2::ZERO, -(float)M_PI_2);
-		centrtOffSet *= 15.f;
-		myDebugDrawNode->drawPoint(myDebugDrawNode->convertToNodeSpace(center), 2, aColor);
-		myDebugDrawNode->drawLine(myDebugDrawNode->convertToNodeSpace(center), myDebugDrawNode->convertToNodeSpace(center + centrtOffSet), aColor);
-
-
-	}
-
-}
 void Player::OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent)
 {
 	switch (aKeyCode)
@@ -269,6 +259,7 @@ void Player::OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent)
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		AddMovment(-1.f);
 		MapInput(EInputMapping::Move_Left, true);
+
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		AddMovment(1.f);
@@ -289,7 +280,6 @@ void Player::OnKeyPressed(EventKeyboard::KeyCode aKeyCode, Event* aEvent)
 }
 void Player::OnKeyReleased(EventKeyboard::KeyCode aKeyCode, Event* aEvent)
 {
-	
 	switch (aKeyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
@@ -467,17 +457,19 @@ void Player::Jump()
 				Vec2 dashTan = dashDir.rotateByAngle(Vec2::ZERO, (float)M_PI_2);
 				GrowingArray<GeoVertex> newDashCutPoly(2);
 
-				float dashLineSize = 2.f;
+				float dashLineSize = 8.f;
 				Vec2 dashLineOffset = dashTan * (dashLineSize / 2.f);
 
-				newDashCutPoly.Add(myDashStartPoint - dashLineOffset);
+				newDashCutPoly.Add(myDashStartPoint - (dashLineOffset));
 				newDashCutPoly.Add(myDashStartPoint + dashLineOffset);
-				newDashCutPoly.Add(myDashEndPoint + dashLineOffset);
-				newDashCutPoly.Add(myDashEndPoint - dashLineOffset);
+				newDashCutPoly.Add(myDashEndPoint + (dashLineOffset * 2.f));
+				newDashCutPoly.Add(myDashEndPoint - (dashLineOffset * 2.f));
 
-				myDashCutPolygon->Init(newDashCutPoly);
+				myDashCutPolygon->SetWorldVertices(newDashCutPoly);
 
 				CutPolygon();
+
+				//myDashCutPolygon->SetWorldVertices(GrowingArray<GeoVertex>());
 				//myMovementVector = myMovementVector.length() * dashDir;
 			}
 		}
@@ -493,6 +485,13 @@ void Player::Jump()
 
 void Player::CutPolygon()
 {
+	GrowingArray<DestructibleObject*>& destructibleObjects = GameRoot::GetGameScene()->myDestructibleObjects;
+	int count = destructibleObjects.Count();
+	for (int i = 0; i < count; i++)
+	{
+		destructibleObjects[i]->Cut(myDashCutPolygon);
+	}
+
 	int numPolys = myPolygons.Count();
 	for (int i = numPolys - 1; i > -1; i--)
 	{
@@ -501,16 +500,17 @@ void Player::CutPolygon()
 		if (clipping && myNewPolygons.Count() > 0)
 		{
 			//Replace with first poly
-			myPolygons[i]->Init(myNewPolygons[0]);
-			myPolygons[i]->SetPositionToCenterOfVerices();
+			myPolygons[i]->SetWorldVertices(myNewPolygons[0]);
+
 
 			//If more polys, add them
 			if (myNewPolygons.Count() > 1)
 			{
 				for (int i = 1; i < myNewPolygons.Count(); ++i)
 				{
-					myPolygons.Add(new GeoPolygon());
-					myPolygons.GetLast()->Init(myNewPolygons[i]);
+					myPolygons.Add(GeoPolygon::create());
+					myPolygons.GetLast()->SetWorldVertices(myNewPolygons[i]);
+					
 
 					Color4F color;
 					color.r = rand_0_1();
